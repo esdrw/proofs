@@ -18,6 +18,42 @@ Require Import Main.Tactics.
 Import ListNotations.
 Import Name.
 
+Lemma taOpenEquals :
+  forall i j t1 t2 t3,
+  i <> j ->
+  taOpen (taOpen t1 t2 i) t3 j = taOpen t1 t2 i ->
+  taOpen t1 t3 j = t1.
+Proof.
+  intros.
+  generalize dependent i.
+  generalize dependent j.
+  induction t1; clean; magic.
+  - inversion H0.
+    f_equal.
+    + apply IHt1_1 with (i := i) (j := j); auto.
+    + apply IHt1_2 with (i := i) (j := j); auto.
+  - inversion H0.
+    f_equal.
+    apply IHt1 with (i := S i) (j := S j); auto.
+Qed.
+
+Theorem taOpenLocallyClosed :
+  forall i t1 t2,
+  tLocallyClosed t1 ->
+  taOpen t1 t2 i = t1.
+Proof.
+  intros.
+  generalize dependent i.
+  generalize dependent t2.
+  induction H; magic.
+  clean.
+  f_equal.
+  pose (H1 := tNameFresh l).
+  destruct H1.
+  specialize (H0 x H1).
+  apply taOpenEquals with (i := 0) (j := S i) (t2 := tFreeVar x); auto.
+Qed.
+
 Theorem exCloseOpenVar :
   forall e i x,
   exFreeVars e = [] ->
