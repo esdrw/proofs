@@ -27,14 +27,10 @@ Proof.
   intros.
   generalize dependent i.
   generalize dependent j.
-  induction t1; clean; magic.
-  - inversion H0.
-    f_equal.
-    + apply IHt1_1 with (i := i) (j := j); auto.
-    + apply IHt1_2 with (i := i) (j := j); auto.
-  - inversion H0.
-    f_equal.
-    apply IHt1 with (i := S i) (j := S j); auto.
+  induction t1; clean; magic; inversion H0; f_equal.
+  - apply IHt1_1 with (i := i) (j := j); auto.
+  - apply IHt1_2 with (i := i) (j := j); auto.
+  - apply IHt1 with (i := S i) (j := S j); auto.
 Qed.
 
 Theorem taOpenLocallyClosed :
